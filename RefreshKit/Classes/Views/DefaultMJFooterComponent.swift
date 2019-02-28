@@ -41,6 +41,12 @@ class DefaultMJFooterComponent: MJRefreshBackFooter {
         self.container.frame = self.bounds
     }
     
+    override var pullingPercent: CGFloat{
+        didSet{
+            self.container.pullingPercent = pullingPercent
+        }
+    }
+    
     
     override var state: MJRefreshState{
         didSet{

@@ -15,5 +15,6 @@ open class RefreshComponent : UIView{
     
     open var refreshState : RefreshState = .idle
     
+    open var pullingPercent : CGFloat = 0
     
 }

@@ -17,6 +17,11 @@ public class DefaultFooterContainer : RefreshComponent{
             self.label.text = "\(refreshState)"
         }
     }
+    public override var pullingPercent: CGFloat{
+        didSet{
+            print("footer-pullingPercent:\(pullingPercent)")
+        }
+    }
     
     lazy var label : UILabel = {
         let l = UILabel()

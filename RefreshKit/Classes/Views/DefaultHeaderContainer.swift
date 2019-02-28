@@ -18,6 +18,12 @@ public class DefaultHeaderContainer : RefreshComponent{
         }
     }
     
+    public override var pullingPercent: CGFloat{
+        didSet{
+            print("header-pullingPercent:\(pullingPercent)")
+        }
+    }
+    
     lazy var label : UILabel = {
         let l = UILabel()
         l.textColor = UIColor.black
