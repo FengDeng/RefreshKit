@@ -48,6 +48,9 @@ public class Refresher {
     public var headerTime = AddRefreshComponentTime.successOnce
     public var footerTime = AddRefreshComponentTime.successOnce
     
+    public var preloadEnable = true
+    public var preloadMaxDistanceToBottom : CGFloat = 4 * UIScreen.main.bounds.height
+    
     public var headerView : RefreshComponent = DefaultHeaderContainer()
     public var footerView : RefreshComponent = DefaultFooterContainer()
     

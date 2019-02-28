@@ -38,7 +38,7 @@ class ViewController: UIViewController {
             guard let `self` = self else{return}
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2, execute: {
                 self.tableView.rf.headerEndRefreshingWithSuccess()
-                self.count = self.count + 1
+                self.count = 100
                 self.tableView.reloadData()
             })
         }
@@ -46,7 +46,11 @@ class ViewController: UIViewController {
         tableView.rf.footerView = DefaultFooterContainer()
         tableView.rf.footerBlock = {
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2, execute: {
-                self.tableView.rf.footerEndRefreshingWithSuccess()
+                if self.count > 102{
+                    self.tableView.rf.footerEndRefreshingWithEmpty()
+                } else{
+                    self.tableView.rf.footerEndRefreshingWithSuccess()
+                }
                 self.count = self.count + 1
                 self.tableView.reloadData()
             })
@@ -82,8 +86,5 @@ extension ViewController : UITableViewDataSource{
 
 extension ViewController : UITableViewDelegate{
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row > 30{
-            tableView.rf.footerBeginRefreshing()
-        }
     }
 }

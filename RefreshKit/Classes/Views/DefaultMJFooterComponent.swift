@@ -22,18 +22,24 @@ class DefaultMJFooterComponent: MJRefreshBackFooter {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //添加预加载的功能
     override func scrollViewContentOffsetDidChange(_ change: [AnyHashable : Any]!) {
         super.scrollViewContentOffsetDidChange(change)
+        
+        //如果手指已经离开 返回
+        if !self.scrollView.isDragging{return}
+        
+        //如果是idle状态下  离底部距离满足条件，那就提前预加载
+        guard let enable = self.container.rf?.preloadEnable,enable, case .idle = self.refreshState else{return}
+        
+        //如果不是上拉 返回
+        guard let old = change["old"] as? CGPoint,let new = change["new"] as? CGPoint,new.y > old.y else{return}
+        
+        let distanceToBottom = self.scrollView.contentSize.height - (self.scrollView.contentOffset.y + scrollView.bounds.height) + self.scrollView.mj_insetT
+        if distanceToBottom < (self.container.rf?.preloadMaxDistanceToBottom ?? UIScreen.main.bounds.height * 2){
+            self.beginRefreshing()
+        }
     }
-    
-    /*
-    //contentSize变化 更新 footer的位置
-    override func scrollViewContentSizeDidChange(_ change: [AnyHashable : Any]!) {
-        super.scrollViewContentSizeDidChange(change)
-        let contentHeight = self.scrollView.mj_contentH + self.ignoredScrollViewContentInsetBottom
-        let scrollHeight = self.scrollView.mj_h - self.scrollViewOriginalInset.top - self.scrollViewOriginalInset.bottom + self.ignoredScrollViewContentInsetBottom
-        self.mj_y = [contentHeight,scrollHeight].max()!
-    }*/
     
     
     override func placeSubviews() {

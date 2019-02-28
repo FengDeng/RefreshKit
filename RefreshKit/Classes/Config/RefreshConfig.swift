@@ -29,6 +29,8 @@ public class RefreshConfig{
     public var headerBlock : (()->Void)?
     public var footerBlock : (()->Void)?
     
+    public var preloadEnable = Refresher.default.preloadEnable
+    public var preloadMaxDistanceToBottom : CGFloat = Refresher.default.preloadMaxDistanceToBottom
     
     public var headerTime = Refresher.default.headerTime
     public var footerTime = Refresher.default.footerTime
@@ -159,6 +161,7 @@ extension RefreshConfig{
 extension RefreshConfig{
     fileprivate func addMJHeader(){
         if self.scrollView?.mj_header != nil {return}
+        self.headerView.rf = self
         self.scrollView?.mj_header = DefaultMJHeaderComponent.init(container: self.headerView)
         self.scrollView?.mj_header.refreshingBlock = {[weak self] in
             self?.placeState = .refreshing
@@ -168,6 +171,7 @@ extension RefreshConfig{
     
     fileprivate func addMJFooter(){
         if self.scrollView?.mj_footer != nil{return}
+        self.footerView.rf = self
         self.scrollView?.mj_footer = DefaultMJFooterComponent.init(container: self.footerView)
         self.scrollView?.mj_footer.refreshingBlock = {[weak self] in
             self?.footerBlock?()
