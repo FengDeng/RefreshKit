@@ -19,7 +19,8 @@ public class RefreshConfig{
     
     weak var scrollView : UIScrollView?
     
-    public var placeViewEnable = true //是否使用占位 空白图
+    public var placeOffsetY : CGFloat = Refresher.default.placeOffsetY
+    public var placeViewEnable = Refresher.default.placeViewEnable
     public var placeView : PlaceComponent? = Refresher.default.placeView
     
     public var headerView : RefreshComponent  = Refresher.default.headerView
@@ -29,8 +30,8 @@ public class RefreshConfig{
     public var footerBlock : (()->Void)?
     
     
-    public var headerTime = AddRefreshComponentTime.successOnce
-    public var footerTime = AddRefreshComponentTime.successOnce
+    public var headerTime = Refresher.default.headerTime
+    public var footerTime = Refresher.default.footerTime
     
     
     var placeState : PlaceState = .normal{
@@ -46,6 +47,11 @@ extension RefreshConfig : EmptyDataSource{
     public func customViewForEmpty(in view: UIView) -> UIView? {
         if !placeViewEnable{return nil}
         return self.placeView
+    }
+}
+extension RefreshConfig : EmptyDelegate{
+    public func verticalOffsetForEmpty(in view: UIView) -> CGFloat {
+        return self.placeOffsetY
     }
 }
 

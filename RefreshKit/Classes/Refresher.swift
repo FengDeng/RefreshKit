@@ -41,7 +41,12 @@ public class Refresher {
     
     private init(){}
     
+    public var placeViewEnable = true
+    public var placeOffsetY : CGFloat = 0
     public var placeView : PlaceComponent?
+    
+    public var headerTime = AddRefreshComponentTime.successOnce
+    public var footerTime = AddRefreshComponentTime.successOnce
     
     public var headerView : RefreshComponent = DefaultHeaderContainer()
     public var footerView : RefreshComponent = DefaultFooterContainer()
