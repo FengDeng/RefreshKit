@@ -10,8 +10,8 @@ import Foundation
 import UIKit
 
 private var refreshConfigKey: Void?
-public extension UIScrollView{
-    public var rf: RefreshConfig {
+extension UIScrollView{
+    fileprivate var rf: RefreshConfig {
         set{
             newValue.scrollView = self
             objc_setAssociatedObject(self, &refreshConfigKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)}
@@ -26,6 +26,12 @@ public extension UIScrollView{
                 return a
             }
         }
+    }
+}
+
+public extension RefreshKitWrapper where Base : UIScrollView{
+    var config: RefreshConfig{
+        return base.rf
     }
 }
 

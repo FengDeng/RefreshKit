@@ -32,7 +32,7 @@ class DefaultMJHeaderComponent : MJRefreshHeader{
     init(container : RefreshComponent) {
         self.container = container
         super.init(frame: CGRect.zero)
-        self.addSubview(self.container)
+        self.addSubview(self.container as! UIView)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -42,12 +42,12 @@ class DefaultMJHeaderComponent : MJRefreshHeader{
     
     override func placeSubviews() {
         super.placeSubviews()
-        self.container.frame = self.bounds
+        (self.container as! UIView).frame = self.bounds
     }
     
     override var pullingPercent: CGFloat{
         didSet{
-            self.container.pullingPercent = pullingPercent
+            self.container.onPullingPercent(pullingPercent)
         }
     }
     
@@ -62,7 +62,7 @@ class DefaultMJHeaderComponent : MJRefreshHeader{
     
     var refreshState : RefreshState = .idle{
         didSet{
-            self.container.refreshState = refreshState
+            self.container.onRefreshState(refreshState)
         }
     }
     
@@ -76,16 +76,16 @@ class DefaultMJHeaderComponent : MJRefreshHeader{
     
     
     func endRefreshingWithSuccess(){
-        super.endRefreshing()
         self.refreshState = .idle
+        super.endRefreshing()
     }
     
     func endRefreshingWithEmpty() {
-        super.endRefreshing()
         self.refreshState = .empty
+        super.endRefreshing()
     }
     func endRefreshingWithError(error:Error) {
-        super.endRefreshing()
         self.refreshState = .error(error)
+        super.endRefreshing()
     }
 }

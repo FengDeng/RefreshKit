@@ -9,13 +9,13 @@
 import Foundation
 import MJRefresh
 
-class DefaultMJFooterComponent: MJRefreshBackFooter {
+class DefaultMJFooterComponent: MJRefreshAutoFooter {
     
     let container : RefreshComponent
     init(container : RefreshComponent) {
         self.container = container
         super.init(frame: CGRect.zero)
-        self.addSubview(self.container)
+        self.addSubview((self.container as! UIView))
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -30,13 +30,13 @@ class DefaultMJFooterComponent: MJRefreshBackFooter {
         if !self.scrollView.isDragging{return}
         
         //如果是idle状态下  离底部距离满足条件，那就提前预加载
-        guard let enable = self.container.rf?.preloadEnable,enable, case .idle = self.refreshState else{return}
+        guard let enable = self.container.refreshConfig?.preloadEnable,enable, case .idle = self.refreshState else{return}
         
         //如果不是上拉 返回
         guard let old = change["old"] as? CGPoint,let new = change["new"] as? CGPoint,new.y > old.y else{return}
         
         let distanceToBottom = self.scrollView.contentSize.height - (self.scrollView.contentOffset.y + scrollView.bounds.height) + self.scrollView.mj_insetT
-        if distanceToBottom < (self.container.rf?.preloadMaxDistanceToBottom ?? UIScreen.main.bounds.height * 2){
+        if distanceToBottom < (self.container.refreshConfig?.preloadMaxDistanceToBottom ?? UIScreen.main.bounds.height * 2){
             self.beginRefreshing()
         }
     }
@@ -44,12 +44,12 @@ class DefaultMJFooterComponent: MJRefreshBackFooter {
     
     override func placeSubviews() {
         super.placeSubviews()
-        self.container.frame = self.bounds
+        (self.container as! UIView).frame = self.bounds
     }
     
     override var pullingPercent: CGFloat{
         didSet{
-            self.container.pullingPercent = pullingPercent
+            self.container.onPullingPercent(pullingPercent)
         }
     }
     
@@ -69,12 +69,12 @@ class DefaultMJFooterComponent: MJRefreshBackFooter {
     
     var refreshState : RefreshState = .idle{
         didSet{
-            self.container.refreshState = refreshState
+            self.container.onRefreshState(refreshState)
         }
     }
     
     override func beginRefreshing() {
-        if self.state == .refreshing{
+        if self.state == .refreshing || self.refreshState == .empty{
             return
         }
         super.beginRefreshing()
@@ -85,17 +85,17 @@ class DefaultMJFooterComponent: MJRefreshBackFooter {
     }
     
     func endRefreshingWithSuccess(){
-        super.endRefreshing()
         self.refreshState = .idle
+        super.endRefreshing()
     }
     
     func endRefreshingWithEmpty() {
-        super.endRefreshing()
         self.refreshState = .empty
+        super.endRefreshing()
     }
     func endRefreshingWithError(error:Error) {
-        super.endRefreshing()
         self.refreshState = .error(error)
+        super.endRefreshing()
     }
     
 }

@@ -16,12 +16,6 @@ public enum PlaceState{
     case error(Error)
 }
 
-open class PlaceComponent : UIView{
-    
-    public weak var rf : RefreshConfig? //弱引用一个 rf
-    
-    open var refreshState : RefreshState = .idle
-    
-    open var placeState : PlaceState = .normal
-    
+public protocol PlaceComponent : RefreshComponent{
+    func onPlaceState(_ state:PlaceState)
 }

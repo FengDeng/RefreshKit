@@ -11,20 +11,24 @@ import EmptyKit
 
 public enum AddRefreshComponentTime{
     case always
-    case nerver
+    case never
     case successOnce //刷新成功一次后
 }
 
 public class RefreshConfig{
     
-    weak var scrollView : UIScrollView?
+    weak var scrollView : UIScrollView?{
+        didSet{
+            self.placeView?.scrollView = self.scrollView
+        }
+    }
     
     public var placeOffsetY : CGFloat = Refresher.default.placeOffsetY
     public var placeViewEnable = Refresher.default.placeViewEnable
-    public var placeView : PlaceComponent? = Refresher.default.placeView
+    public var placeView : PlaceComponent? = Refresher.default.placeView?.init()
     
-    public var headerView : RefreshComponent  = Refresher.default.headerView
-    public var footerView : RefreshComponent = Refresher.default.footerView
+    public var headerView : RefreshComponent  = Refresher.default.headerView.init()
+    public var footerView : RefreshComponent = Refresher.default.footerView.init()
     
     public var headerBlock : (()->Void)?
     public var footerBlock : (()->Void)?
@@ -35,11 +39,13 @@ public class RefreshConfig{
     public var headerTime = Refresher.default.headerTime
     public var footerTime = Refresher.default.footerTime
     
+    var isHeaderRefreshing = false
+    var isFooterRefreshing = false
     
     var placeState : PlaceState = .normal{
         didSet{
             print("placeState:\(placeState)")
-            self.placeView?.placeState = placeState
+            self.placeView?.onPlaceState(placeState)
             self.scrollView?.ept.reloadData()
         }
     }
@@ -48,7 +54,7 @@ public class RefreshConfig{
 extension RefreshConfig : EmptyDataSource{
     public func customViewForEmpty(in view: UIView) -> UIView? {
         if !placeViewEnable{return nil}
-        return self.placeView
+        return self.placeView as? UIView
     }
 }
 extension RefreshConfig : EmptyDelegate{
@@ -82,6 +88,7 @@ extension RefreshConfig{
         
         //判断有无header
         guard let header = self.scrollView?.mj_header else{
+            self.isHeaderRefreshing = true
             self.placeState = .refreshing
             headerBlock()
             return
@@ -91,6 +98,7 @@ extension RefreshConfig{
     }
     
     public func headerEndRefreshingWithSuccess(){
+        self.isHeaderRefreshing = false
         self.placeState = .normal
         (self.scrollView?.mj_header as? DefaultMJHeaderComponent)?.endRefreshingWithSuccess()
         if self.headerTime == .successOnce{
@@ -102,10 +110,12 @@ extension RefreshConfig{
     }
     
     public func headerEndRefreshingWithEmpty(){
+        self.isHeaderRefreshing = false
         self.placeState = .empty
         (self.scrollView?.mj_header as? DefaultMJHeaderComponent)?.endRefreshingWithEmpty()
     }
     public func headerEndRefreshingWithError(error:Error){
+        self.isHeaderRefreshing = false
         self.placeState = .error(error)
         (self.scrollView?.mj_header as? DefaultMJHeaderComponent)?.endRefreshingWithError(error: error)
     }
@@ -114,44 +124,54 @@ extension RefreshConfig{
     public func footerBeginRefreshing(){
         guard let footerBlock = self.footerBlock else{return}
         guard let footer = self.scrollView?.mj_footer else{
+            self.isFooterRefreshing = true
             footerBlock()
             return
         }
         footer.beginRefreshing()
     }
     public func footerEndRefreshingWithSuccess(){
+        self.isFooterRefreshing = false
         (self.scrollView?.mj_footer as? DefaultMJFooterComponent)?.endRefreshingWithSuccess()
     }
     
     public func footerEndRefreshingWithEmpty(){
+        self.isFooterRefreshing = false
         (self.scrollView?.mj_footer as? DefaultMJFooterComponent)?.endRefreshingWithEmpty()
     }
     public func footerEndRefreshingWithError(error:Error){
+        self.isFooterRefreshing = false
         (self.scrollView?.mj_footer as? DefaultMJFooterComponent)?.endRefreshingWithError(error: error)
     }
     
     
     public func endRefreshingWithSuccess(){
-        if let h = self.scrollView?.mj_header.isRefreshing,h{
+        if self.isHeaderRefreshing{
             self.headerEndRefreshingWithSuccess()
+        }else{
+            self.placeState = .normal
         }
-        if let r = self.scrollView?.mj_footer.isRefreshing,r{
+        if self.isFooterRefreshing{
             self.footerEndRefreshingWithSuccess()
         }
     }
     public func endRefreshingWithEmpty(){
-        if let h = self.scrollView?.mj_header.isRefreshing,h{
+        if self.isHeaderRefreshing{
             self.headerEndRefreshingWithEmpty()
+        }else{
+            self.placeState = .empty
         }
-        if let r = self.scrollView?.mj_footer.isRefreshing,r{
+        if self.isFooterRefreshing{
             self.footerEndRefreshingWithEmpty()
         }
     }
     public func endRefreshingWithError(error:Error){
-        if let h = self.scrollView?.mj_header.isRefreshing,h{
+        if self.isHeaderRefreshing{
             self.headerEndRefreshingWithError(error: error)
+        }else{
+            self.placeState = .error(error)
         }
-        if let r = self.scrollView?.mj_footer.isRefreshing,r{
+        if self.isFooterRefreshing{
             self.footerEndRefreshingWithError(error: error)
         }
     }
@@ -161,9 +181,10 @@ extension RefreshConfig{
 extension RefreshConfig{
     fileprivate func addMJHeader(){
         if self.scrollView?.mj_header != nil {return}
-        self.headerView.rf = self
+        self.headerView.refreshConfig = self
         self.scrollView?.mj_header = DefaultMJHeaderComponent.init(container: self.headerView)
-        self.scrollView?.mj_header.refreshingBlock = {[weak self] in
+        self.scrollView?.mj_header?.refreshingBlock = {[weak self] in
+            self?.isHeaderRefreshing = true
             self?.placeState = .refreshing
             self?.headerBlock?()
         }
@@ -171,9 +192,10 @@ extension RefreshConfig{
     
     fileprivate func addMJFooter(){
         if self.scrollView?.mj_footer != nil{return}
-        self.footerView.rf = self
+        self.footerView.refreshConfig = self
         self.scrollView?.mj_footer = DefaultMJFooterComponent.init(container: self.footerView)
-        self.scrollView?.mj_footer.refreshingBlock = {[weak self] in
+        self.scrollView?.mj_footer?.refreshingBlock = {[weak self] in
+            self?.isFooterRefreshing = true
             self?.footerBlock?()
         }
     }

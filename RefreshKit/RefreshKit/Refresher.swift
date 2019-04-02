@@ -43,7 +43,7 @@ public class Refresher {
     
     public var placeViewEnable = true
     public var placeOffsetY : CGFloat = 0
-    public var placeView : PlaceComponent?
+    public var placeView : PlaceComponent.Type?
     
     public var headerTime = AddRefreshComponentTime.successOnce
     public var footerTime = AddRefreshComponentTime.successOnce
@@ -51,7 +51,8 @@ public class Refresher {
     public var preloadEnable = true
     public var preloadMaxDistanceToBottom : CGFloat = 4 * UIScreen.main.bounds.height
     
-    public var headerView : RefreshComponent = DefaultHeaderContainer()
-    public var footerView : RefreshComponent = DefaultFooterContainer()
+    public var headerView : RefreshComponent.Type = DefaultHeaderContainer.self
+    public var footerView : RefreshComponent.Type = DefaultFooterContainer.self
+    
     
 }
