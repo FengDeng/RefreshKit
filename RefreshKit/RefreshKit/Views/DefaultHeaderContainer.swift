@@ -39,8 +39,8 @@ public class DefaultHeaderContainer : UIView,RefreshComponent{
     
     lazy var label : UILabel = {
         let l = UILabel()
-        l.textColor = UIColor.c_9
-        l.font = UIFont.f_30
+        l.textColor = UIColor.lightGray
+        l.font = UIFont.systemFont(ofSize: 15, weight: UIFont.Weight.bold)
         l.textAlignment = .center
         return l
     }()

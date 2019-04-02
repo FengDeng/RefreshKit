@@ -29,34 +29,34 @@ class ViewController: UIViewController {
         tableView.frame = self.view.bounds
         
         
+
+        tableView.rf.config.headerTime = .always
+        tableView.rf.config.footerTime = .successOnce
         
-        tableView.rf.headerTime = .always
-        tableView.rf.footerTime = .successOnce
-        
-        tableView.rf.headerView = DefaultHeaderContainer()
-        tableView.rf.headerBlock = {[weak self] in
+        tableView.rf.config.headerView = DefaultHeaderContainer()
+        tableView.rf.config.headerBlock = {[weak self] in
             guard let `self` = self else{return}
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2, execute: {
-                self.tableView.rf.headerEndRefreshingWithSuccess()
+                self.tableView.rf.config.headerEndRefreshingWithSuccess()
                 self.count = 100
                 self.tableView.reloadData()
             })
         }
         
-        tableView.rf.footerView = DefaultFooterContainer()
-        tableView.rf.footerBlock = {
+        tableView.rf.config.footerView = DefaultFooterContainer()
+        tableView.rf.config.footerBlock = {
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2, execute: {
                 if self.count > 102{
-                    self.tableView.rf.footerEndRefreshingWithEmpty()
+                    self.tableView.rf.config.footerEndRefreshingWithEmpty()
                 } else{
-                    self.tableView.rf.footerEndRefreshingWithSuccess()
+                    self.tableView.rf.config.footerEndRefreshingWithSuccess()
                 }
                 self.count = self.count + 1
                 self.tableView.reloadData()
             })
         }
         
-        self.tableView.rf.headerBeginRefreshing()
+        self.tableView.rf.config.headerBeginRefreshing()
         
     }
     

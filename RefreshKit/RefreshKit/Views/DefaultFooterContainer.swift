@@ -55,35 +55,21 @@ public class DefaultFooterContainer : UIView, RefreshComponent{
     lazy var label : UILabel = {
         let l = UILabel()
         l.textAlignment = .center
-        l.font = UIFont.f_28
-        l.textColor = UIColor.c_9
+        l.textColor = UIColor.lightGray
+        l.font = UIFont.systemFont(ofSize: 15, weight: UIFont.Weight.bold)
         return l
     }()
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        /*
-        let line = UIView()
-        line.backgroundColor = UIColor.c_e
-        self.addSubview(line)
-        line.snp.makeConstraints { (make) in
-            make.height.equalTo(0.5)
-            make.left.top.right.equalToSuperview()
-        }*/
+        self.translatesAutoresizingMaskIntoConstraints = false
         
         self.addSubview(label)
-        label.snp.makeConstraints { (make) in
-            make.center.equalToSuperview()
-        }
+        label.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        label.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+
         self.addSubview(indicatorView)
-        indicatorView.snp.makeConstraints { (make) in
-            make.centerY.equalToSuperview()
-            make.right.equalTo(label.snp.left).offset(-10)
-        }
-    }
-    
-    override public func layoutSubviews() {
-        super.layoutSubviews()
+        indicatorView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        indicatorView.rightAnchor.constraint(equalTo: label.leftAnchor,constant: -10).isActive = true
     }
     
     required init?(coder aDecoder: NSCoder) {
