@@ -25,7 +25,11 @@ public class RefreshConfig{
     
     public var placeOffsetY : CGFloat = Refresher.default.placeOffsetY
     public var placeViewEnable = Refresher.default.placeViewEnable
-    public var placeView : PlaceComponent? = Refresher.default.placeView?.init()
+    public var placeView : PlaceComponent? = Refresher.default.placeView?.init(){
+        didSet{
+            placeView?.refreshConfig = self
+        }
+    }
     
     public var headerView : RefreshComponent  = Refresher.default.headerView.init()
     public var footerView : RefreshComponent = Refresher.default.footerView.init()
@@ -49,6 +53,10 @@ public class RefreshConfig{
             self.scrollView?.ept.reloadData()
         }
     }
+    
+    init() {
+        self.placeView?.refreshConfig = self
+    }
 }
 
 extension RefreshConfig : EmptyDataSource{
@@ -60,6 +68,10 @@ extension RefreshConfig : EmptyDataSource{
 extension RefreshConfig : EmptyDelegate{
     public func verticalOffsetForEmpty(in view: UIView) -> CGFloat {
         return self.placeOffsetY
+    }
+    
+    public func emptyShouldAllowScroll(in view: UIView) -> Bool {
+        return false
     }
 }
 
