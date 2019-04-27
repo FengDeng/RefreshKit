@@ -85,6 +85,7 @@ extension RefreshConfig{
         
         if self.placeViewEnable,self.scrollView?.ept.dataSource == nil{
             self.scrollView?.ept.dataSource = self
+            self.scrollView?.ept.delegate = self
         }
         
         //判断有没下拉刷新
