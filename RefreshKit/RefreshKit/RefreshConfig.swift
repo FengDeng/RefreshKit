@@ -62,7 +62,7 @@ public class RefreshConfig{
 extension RefreshConfig : EmptyDataSource{
     public func customViewForEmpty(in view: UIView) -> UIView? {
         if !placeViewEnable{return nil}
-        return self.placeView as? UIView
+        return self.placeView
     }
 }
 extension RefreshConfig : EmptyDelegate{
@@ -122,9 +122,9 @@ extension RefreshConfig{
         }
     }
     
-    public func headerEndRefreshingWithEmpty(){
+    public func headerEndRefreshingWithEmpty(emptyMsg:String){
         self.isHeaderRefreshing = false
-        self.placeState = .empty
+        self.placeState = .empty(emptyMsg)
         (self.scrollView?.mj_header as? DefaultMJHeaderComponent)?.endRefreshingWithEmpty()
     }
     public func headerEndRefreshingWithError(error:Error){
@@ -168,11 +168,11 @@ extension RefreshConfig{
             self.footerEndRefreshingWithSuccess()
         }
     }
-    public func endRefreshingWithEmpty(){
+    public func endRefreshingWithEmpty(emptyMsg:String){
         if self.isHeaderRefreshing{
-            self.headerEndRefreshingWithEmpty()
+            self.headerEndRefreshingWithEmpty(emptyMsg: emptyMsg)
         }else{
-            self.placeState = .empty
+            self.placeState = .empty(emptyMsg)
         }
         if self.isFooterRefreshing{
             self.footerEndRefreshingWithEmpty()

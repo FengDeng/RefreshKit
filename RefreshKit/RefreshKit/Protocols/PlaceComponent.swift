@@ -12,7 +12,7 @@ import  UIKit
 public enum PlaceState{
     case normal
     case refreshing
-    case empty
+    case empty(String)
     case error(Error)
 }
 
