@@ -43,6 +43,7 @@ public class Refresher {
     
     public var placeViewEnable = true
     public var placeOffsetY : CGFloat = 0
+    public var placeAllowScroll = false
     public var placeView : PlaceComponent.Type?
     
     public var headerTime = AddRefreshComponentTime.successOnce

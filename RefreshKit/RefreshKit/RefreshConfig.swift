@@ -25,6 +25,7 @@ public class RefreshConfig{
     
     public var placeOffsetY : CGFloat = Refresher.default.placeOffsetY
     public var placeViewEnable = Refresher.default.placeViewEnable
+    public var placeAllowScroll = Refresher.default.placeAllowScroll
     public var placeView : PlaceComponent? = Refresher.default.placeView?.init(){
         didSet{
             placeView?.refreshConfig = self
@@ -71,7 +72,7 @@ extension RefreshConfig : EmptyDelegate{
     }
     
     public func emptyShouldAllowScroll(in view: UIView) -> Bool {
-        return false
+        return placeAllowScroll
     }
 }
 
