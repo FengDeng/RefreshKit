@@ -198,6 +198,7 @@ extension RefreshConfig{
         self.headerView.refreshConfig = self
         self.scrollView?.mj_header = DefaultMJHeaderComponent.init(container: self.headerView)
         self.scrollView?.mj_header?.refreshingBlock = {[weak self] in
+            self?.scrollView?.mj_footer = nil
             self?.isHeaderRefreshing = true
             self?.placeState = .refreshing
             self?.headerBlock?()
