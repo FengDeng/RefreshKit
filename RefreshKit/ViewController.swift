@@ -38,7 +38,7 @@ class ViewController: UIViewController {
             guard let `self` = self else{return}
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2, execute: {
                 self.tableView.rf.config.headerEndRefreshingWithSuccess()
-                self.count = 100
+                self.count = 2
                 self.tableView.reloadData()
             })
         }
@@ -51,7 +51,7 @@ class ViewController: UIViewController {
                 } else{
                     self.tableView.rf.config.footerEndRefreshingWithSuccess()
                 }
-                self.count = self.count + 1
+                self.count = self.count + 5
                 self.tableView.reloadData()
             })
         }

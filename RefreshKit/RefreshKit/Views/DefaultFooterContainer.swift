@@ -12,31 +12,39 @@ import UIKit
 public class DefaultFooterContainer : UIView, RefreshComponent{
     public func onRefreshState(_ state: RefreshState) {
         print("footer:\(state)")
-        self.label.text = "\(state)"
+        
+        print(self.refreshConfig?.scrollView?.bounds.height)
+        print(self.superview?.frame)
+        ///加一个隐藏吧 如果b不满一屏  隐藏底部视图
+        if let sHeight = self.refreshConfig?.scrollView?.bounds.height,let y = self.superview?.frame.minY, y > sHeight{
+            self.isHidden = false
+        }else{
+            self.isHidden = true
+        }
+        
         switch state {
         case .idle:
-            self.indicatorView.isHidden = true
+            self.indicatorView.stopAnimating()
             self.label.text = "上拉可以加载更多"
             break
         case .pulling:
-            self.indicatorView.isHidden = true
+            self.indicatorView.stopAnimating()
             self.label.text = "松开立即加载更多"
             break
         case .refreshing:
-            self.indicatorView.isHidden = false
             self.indicatorView.startAnimating()
             self.label.text = "正在加载更多的数据..."
             break
         case .willRefresh:
-            self.indicatorView.isHidden = true
+            self.indicatorView.stopAnimating()
             self.label.text = "已经到底啦"
             break
         case .empty:
-            self.indicatorView.isHidden = true
+            self.indicatorView.stopAnimating()
             self.label.text = "已经到底啦"
             break
         case .error(_):
-            self.indicatorView.isHidden = true
+            self.indicatorView.stopAnimating()
             self.label.text = "出错啦,上拉重新加载"
             break
         }
@@ -49,6 +57,7 @@ public class DefaultFooterContainer : UIView, RefreshComponent{
     lazy var indicatorView : UIActivityIndicatorView = {
         let v = UIActivityIndicatorView()
         v.style = UIActivityIndicatorView.Style.gray
+        v.hidesWhenStopped = true
         return v
     }()
     
