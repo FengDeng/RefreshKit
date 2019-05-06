@@ -15,7 +15,12 @@ class DefaultMJFooterComponent: MJRefreshAutoFooter {
     init(container : RefreshComponent) {
         self.container = container
         super.init(frame: CGRect.zero)
-        self.addSubview((self.container as! UIView))
+        let view = (self.container as! UIView)
+        self.addSubview(view)
+        view.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+        view.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+        view.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
+        view.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -39,12 +44,6 @@ class DefaultMJFooterComponent: MJRefreshAutoFooter {
         if distanceToBottom < (self.container.refreshConfig?.preloadMaxDistanceToBottom ?? UIScreen.main.bounds.height * 2){
             self.beginRefreshing()
         }
-    }
-    
-    
-    override func placeSubviews() {
-        super.placeSubviews()
-        (self.container as! UIView).frame = self.bounds
     }
     
     override var pullingPercent: CGFloat{

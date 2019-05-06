@@ -63,10 +63,13 @@ public class DefaultFooterContainer : UIView, RefreshComponent{
         super.init(frame: frame)
         self.translatesAutoresizingMaskIntoConstraints = false
         
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.setContentHuggingPriority(UILayoutPriority.defaultHigh, for: NSLayoutConstraint.Axis.horizontal)
         self.addSubview(label)
         label.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         label.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-
+        
+        indicatorView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(indicatorView)
         indicatorView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         indicatorView.rightAnchor.constraint(equalTo: label.leftAnchor,constant: -10).isActive = true
